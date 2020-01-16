@@ -8,9 +8,10 @@ Vue.use(VueRouter)
 const router = new VueRouter({
   // 配置路由规则
   routes: [
+    // name： 给这个路由规则起一个名字 /home/one
     { path: '/', redirect: '/login' },
-    { path: '/login', component: Login },
-    { path: '/register', component: Register }
+    { path: '/login', component: Login, name: 'login' },
+    { path: '/register', component: Register, name: 'register' }
   ]
 })
 

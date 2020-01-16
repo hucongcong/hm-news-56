@@ -1,6 +1,6 @@
 <template>
   <div class="login">
-    <div class="close">
+    <div class="close"  @click="$router.go(-1)">
       <i class="iconfont iconicon-test"></i>
     </div>
     <div class="logo">
@@ -14,6 +14,10 @@
     </div>
     <div class="login-btn">
       <hm-button @click="login">登录</hm-button>
+    </div>
+
+    <div class="go-register">
+      没有账号？立即<router-link to="/register">注册</router-link>
     </div>
   </div>
 </template>
@@ -29,6 +33,12 @@ export default {
   },
   components: {
     HmButton
+  },
+  created () {
+    // console.log(this.$route)
+    const { username, password } = this.$route.params
+    this.username = username
+    this.password = password
   },
   methods: {
     async login () {
@@ -69,30 +79,13 @@ export default {
   .login-btn {
     margin-top: 30px;
   }
-}
 
-.input_box {
-  padding-bottom: 15px;
-  position: relative;
-  .hm-input {
-    width: 100%;
-    height: 38px;
-    background-color: transparent;
-    border-bottom: 1px solid #666;
+  .go-register {
+    text-align: center;
+    height: 30px;
+    line-height: 30px;
     font-size: 18px;
-
-    &.error {
-      border-color: red;
-    }
-    &.success {
-      border-color: green;
-    }
-  }
-  .tips {
-    color: red;
-    position: absolute;
-    bottom: 0;
-    left: 0;
+    margin-top: 10px;
   }
 }
 </style>
