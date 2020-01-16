@@ -5,9 +5,11 @@
 <script>
 export default {
   methods: {
-    handleClick (e) {
-      // console.log('213123123')
-      this.$emit('click', e)
+    handleClick () {
+      // console.log('123')
+      // 用户点击的时候，触发了组件自己的aa事件
+      // console.log('123')
+      this.$emit('click')
     }
   }
 }

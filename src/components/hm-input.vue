@@ -41,9 +41,6 @@ export default {
   },
   methods: {
     handleInput (e) {
-      // console.log(e.target.value)
-      // this.value = e.target.value
-      // 触发input事件，并且把值传递过去
       const { value } = e.target
       this.$emit('input', value)
 

@@ -7,21 +7,18 @@
       <i class="iconfont iconnew"></i>
     </div>
     <div class="username">
-      <!-- <hm-input placeholder="请输入用户名" v-model="username"></hm-input> -->
-      <hm-input placeholder="请输入用户名" v-model="username" :rules="/^1\d{4,10}$/" err-msg="输入的用户名格式错误"></hm-input>
+      <hm-input  placeholder="请输入用户名" v-model="username" :rules="/^1\d{4,10}$/" err-msg="用户名错误"></hm-input>
     </div>
     <div class="password">
-      <hm-input type="password" placeholder="请输入密码" v-model="password" :rules="/^\d{3,12}$/" err-msg="你输入的密码格式有误"></hm-input>
+      <hm-input type="password" v-model="password" placeholder="请输入用户密码" :rules="/^\d{3,12}$/" err-msg="密码格式错误"></hm-input>
     </div>
-    <div class="btn">
+    <div class="login-btn">
       <hm-button @click="login">登录</hm-button>
     </div>
   </div>
 </template>
-
 <script>
-import HmInput from '../components/HmInput'
-import HmButton from '../components/HmButton'
+import HmButton from '../components/hm-button'
 import axios from 'axios'
 export default {
   data () {
@@ -31,12 +28,10 @@ export default {
     }
   },
   components: {
-    HmInput,
     HmButton
   },
   methods: {
     async login () {
-      // console.log('登录了吗')
       if (!this.username || !this.password) return
 
       // 发送ajax请求
@@ -45,9 +40,11 @@ export default {
         password: this.password
       })
       if (res.data.statusCode === 401) {
-        alert('用户名或者密码错误')
+        // alert('用户名或者密码错误')
+        this.$toast.fail('用户名或者密码错误')
       } else {
-        alert('登录成功')
+        // alert('登录成功')
+        this.$toast.success('登录成功')
       }
     }
   }
@@ -69,8 +66,33 @@ export default {
       color: #d81e06;
     }
   }
-  .btn {
-    margin-top: 20px;
+  .login-btn {
+    margin-top: 30px;
+  }
+}
+
+.input_box {
+  padding-bottom: 15px;
+  position: relative;
+  .hm-input {
+    width: 100%;
+    height: 38px;
+    background-color: transparent;
+    border-bottom: 1px solid #666;
+    font-size: 18px;
+
+    &.error {
+      border-color: red;
+    }
+    &.success {
+      border-color: green;
+    }
+  }
+  .tips {
+    color: red;
+    position: absolute;
+    bottom: 0;
+    left: 0;
   }
 }
 </style>

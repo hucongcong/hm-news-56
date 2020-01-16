@@ -1,5 +1,7 @@
 <template>
-  <div>注册</div>
+  <div>
+    <hm-button>注册</hm-button>
+  </div>
 </template>
 
 <script>
@@ -13,7 +15,4 @@ export default {
 // scoped原理：
 // 1. 给当前组件的所有的选择器 加上一个属性选择  div[data-v-1f24bdc7]  p[]
 // 2. 给当前组件中模板中的所有的元素添加一个属性 data-v-1f24bdc7
-div {
-  background-color: red;
-}
 </style>
