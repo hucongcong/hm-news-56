@@ -22,17 +22,12 @@
   </div>
 </template>
 <script>
-import HmButton from '../components/hm-button'
-import axios from 'axios'
 export default {
   data () {
     return {
       username: '',
       password: ''
     }
-  },
-  components: {
-    HmButton
   },
   created () {
     // console.log(this.$route)
@@ -45,7 +40,7 @@ export default {
       if (!this.username || !this.password) return
 
       // 发送ajax请求
-      const res = await axios.post('http://localhost:3000/login', {
+      const res = await this.$axios.post('/login', {
         username: this.username,
         password: this.password
       })
@@ -54,7 +49,13 @@ export default {
         this.$toast.fail('用户名或者密码错误')
       } else {
         // alert('登录成功')
+        // 保存token以及用户的id
+        console.log(res)
+        const { token, user } = res.data.data
+        localStorage.setItem('token', token)
+        localStorage.setItem('user_id', user.id)
         this.$toast.success('登录成功')
+        this.$router.push('/profile')
       }
     }
   }

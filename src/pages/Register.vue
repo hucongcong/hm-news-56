@@ -7,8 +7,8 @@
       <i class="iconfont iconnew"></i>
     </div>
     <div class="username">
-      <hm-input placeholder="用户名/手机号码" v-model="form.username" :rules="/^1\d{4,10}$/" err-msg=
-      "用户名格式错误"></hm-input>
+      <hm-input placeholder="用户名/手机号码" v-model="form.username" :rules="rules.username.rules" :err-msg=
+      "rules.username.errMsg"></hm-input>
     </div>
     <div class="nickname">
       <hm-input placeholder="昵称" v-model="form.nickname" :rules="/^[\u4e00-\u9fa5]{3,8}$/" err-msg=
@@ -29,7 +29,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 export default {
   data () {
     return {
@@ -37,12 +36,21 @@ export default {
         username: '',
         password: '',
         nickname: ''
+      },
+      // 校验的规则
+      rules: {
+        username: {
+          rules: /^1\d{4,10}$/,
+          errMsg: '用户名格式错误'
+        }
       }
     }
   },
   methods: {
     async register () {
-      const res = await axios.post('http://localhost:3000/register', this.form)
+      // 表单的校验
+
+      const res = await this.$axios.post('/register', this.form)
       console.log(res)
       if (res.data.statusCode === 400) {
         this.$toast.fail('用户名已经存在')
