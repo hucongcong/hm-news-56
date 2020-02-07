@@ -16,13 +16,20 @@ import HmButton from './components/hm-button.vue'
 import HmInput from './components/hm-input.vue'
 import HmNav from './components/hm-nav.vue'
 import HmHeader from './components/hm-header.vue'
-import { Button, Toast, Dialog } from 'vant'
+import { Button, Toast, Dialog, Field, RadioGroup, Radio, Cell, CellGroup, Uploader, List } from 'vant'
 import moment from 'moment'
 
-// SSR
 Vue.use(Button)
 Vue.use(Toast)
 Vue.use(Dialog)
+Vue.use(Field)
+Vue.use(Radio)
+Vue.use(RadioGroup)
+Vue.use(Cell)
+Vue.use(CellGroup)
+Vue.use(Uploader)
+Vue.use(List)
+
 Vue.component('HmButton', HmButton)
 Vue.component('HmInput', HmInput)
 Vue.component('HmNav', HmNav)
@@ -58,9 +65,23 @@ axios.interceptors.response.use(function (response) {
   return Promise.reject(error)
 })
 
+// 添加请求拦截器
+axios.interceptors.request.use(function (config) {
+  // config指的就是请求的配置参数
+  // console.log('我拦截到了请求', config)
+  // 通过config.headers来设置请求头
+
+  // 如果有token，我们就给接口携带上token
+  const token = localStorage.getItem('token')
+  if (token) {
+    config.headers.Authorization = token
+  }
+  return config
+})
+
 // ---------------------过滤器--------------------------------
-Vue.filter('time', function (input) {
-  return moment(input).format('YYYY-MM-DD')
+Vue.filter('time', function (input, format = 'YYYY-MM-DD') {
+  return moment(input).format(format)
 })
 
 new Vue({

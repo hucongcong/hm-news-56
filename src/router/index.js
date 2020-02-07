@@ -4,7 +4,9 @@ import Login from '../pages/Login.vue'
 import Register from '../pages/Register.vue'
 import Profile from '../pages/Profile.vue'
 import EditProfile from '../pages/EditProfile.vue'
-
+import Follow from '../pages/Follow.vue'
+import Test from '../pages/Test.vue'
+import MyComments from '../pages/MyComments.vue'
 Vue.use(VueRouter)
 
 const router = new VueRouter({
@@ -15,7 +17,10 @@ const router = new VueRouter({
     { path: '/login', component: Login, name: 'login' },
     { path: '/register', component: Register, name: 'register' },
     { path: '/profile', component: Profile, name: 'profile' },
-    { path: '/edit-profile', component: EditProfile, name: 'edit-profile' }
+    { path: '/edit-profile', component: EditProfile, name: 'edit-profile' },
+    { path: '/follow', component: Follow, name: 'follow' },
+    { path: '/test', component: Test, name: 'test' },
+    { path: '/my-comments', component: MyComments, name: 'my-comments' }
   ]
 })
 
@@ -26,7 +31,9 @@ const router = new VueRouter({
 // 需要授权的路径
 const AuthUrls = [
   '/profile',
-  '/edit-profile'
+  '/edit-profile',
+  '/follow',
+  '/my-comments'
 ]
 router.beforeEach(function (to, from, next) {
   // 判断用户是否登录

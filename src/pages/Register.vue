@@ -51,7 +51,6 @@ export default {
       // 表单的校验
 
       const res = await this.$axios.post('/register', this.form)
-      console.log(res)
       if (res.data.statusCode === 400) {
         this.$toast.fail('用户名已经存在')
       } else {
