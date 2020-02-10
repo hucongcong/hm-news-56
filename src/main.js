@@ -16,7 +16,7 @@ import HmButton from './components/hm-button.vue'
 import HmInput from './components/hm-input.vue'
 import HmNav from './components/hm-nav.vue'
 import HmHeader from './components/hm-header.vue'
-import { Button, Toast, Dialog, Field, RadioGroup, Radio, Cell, CellGroup, Uploader, List } from 'vant'
+import { Button, Toast, Dialog, Field, RadioGroup, Radio, Cell, CellGroup, Uploader, List, Tab, Tabs, PullRefresh } from 'vant'
 import moment from 'moment'
 
 Vue.use(Button)
@@ -29,6 +29,9 @@ Vue.use(Cell)
 Vue.use(CellGroup)
 Vue.use(Uploader)
 Vue.use(List)
+Vue.use(Tab)
+Vue.use(Tabs)
+Vue.use(PullRefresh)
 
 Vue.component('HmButton', HmButton)
 Vue.component('HmInput', HmInput)

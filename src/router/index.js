@@ -7,20 +7,26 @@ import EditProfile from '../pages/EditProfile.vue'
 import Follow from '../pages/Follow.vue'
 import Test from '../pages/Test.vue'
 import MyComments from '../pages/MyComments.vue'
+import MyFavorite from '../pages/MyFavorite.vue'
+import Home from '../pages/Home.vue'
+import PostDetail from '../pages/PostDetail.vue'
 Vue.use(VueRouter)
 
 const router = new VueRouter({
   // 配置路由规则
   routes: [
     // name： 给这个路由规则起一个名字 /home/one
-    { path: '/', redirect: '/login' },
+    { path: '/', component: Home, name: 'home' },
     { path: '/login', component: Login, name: 'login' },
     { path: '/register', component: Register, name: 'register' },
     { path: '/profile', component: Profile, name: 'profile' },
     { path: '/edit-profile', component: EditProfile, name: 'edit-profile' },
     { path: '/follow', component: Follow, name: 'follow' },
     { path: '/test', component: Test, name: 'test' },
-    { path: '/my-comments', component: MyComments, name: 'my-comments' }
+    { path: '/my-comments', component: MyComments, name: 'my-comments' },
+    { path: '/my-favorite', component: MyFavorite, name: 'my-favorite' },
+    // 动态路由参数
+    { path: '/post-detail/:id', component: PostDetail, name: 'post-detail' }
   ]
 })
 
@@ -33,7 +39,8 @@ const AuthUrls = [
   '/profile',
   '/edit-profile',
   '/follow',
-  '/my-comments'
+  '/my-comments',
+  '/my-favorite'
 ]
 router.beforeEach(function (to, from, next) {
   // 判断用户是否登录
@@ -47,7 +54,10 @@ router.beforeEach(function (to, from, next) {
     if (token) {
       next()
     } else {
-      next('/login')
+      // next('/login') 代表要跳转到 /login
+      // next('/login')
+      // 推荐使用
+      router.push('/login')
     }
   } else {
     next()
