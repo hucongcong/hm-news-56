@@ -129,8 +129,13 @@ export default {
     },
     onLoad () {
       setTimeout(() => {
+        console.log('需要加载更多数据了')
         // 让当前tab下的当前页+1
         // 重新发送请求，加载更多的数据
+        // 如果当前tab下的finished为true，就不去触发load事件
+        if (this.tabList[this.active].finished) {
+          return
+        }
         this.tabList[this.active].pageIndex++
         this.getPostList()
       }, 3000)

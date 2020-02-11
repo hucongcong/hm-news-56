@@ -45,31 +45,56 @@
       </div>
     </div>
 
+    <!-- 评论区域 -->
+    <div class="post-commnet">
+      <div class="title">精彩跟帖</div>
+      <!-- 评论组件 -->
+      <!-- 把需要渲染的评论的数据传递给评论组件 -->
+      <hm-comment v-for="item in commentList" :key="item.id" :comment="item"></hm-comment>
+    </div>
     <!-- 底部区域 -->
     <div class="footer">
-      <input type="text" placeholder="写跟帖">
-      <div class="icon-comment">
-        <i class="iconfont iconpinglun-"></i>
-        <span class="num">12</span>
+      <div class="comment-input" v-show="!isFocus">
+        <input type="text" placeholder="写跟帖" @focus="handleFoucs">
+        <div class="icon-comment">
+          <i class="iconfont iconpinglun-"></i>
+          <span class="num">{{post.comment_length}}</span>
+        </div>
+        <i class="iconfont iconshoucang" @click="star" :class="{star: post.has_star}"></i>
+        <i class="iconfont iconfenxiang"></i>
       </div>
-      <i class="iconfont iconshoucang"></i>
-      <i class="iconfont iconfenxiang"></i>
+      <!-- 文本域 -->
+      <div class="comment-textarea" v-show="isFocus">
+        <textarea ref="textarea" rows="3" placeholder="回复" @blur="handleBlur"></textarea>
+        <div class="send">发送</div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import HmComment from '../components/hm-comment'
 export default {
+  components: {
+    HmComment
+  },
   data () {
     return {
       // 文章的详细信息
       post: {
         user: {}
-      }
+      },
+      // 控制显示文本框还是文本域
+      isFocus: false,
+      // 评论列表
+      commentList: []
     }
   },
   created () {
+    // 获取文章详情
     this.getPostDetail()
+    // 获取评论列表
+    this.getCommentList()
   },
   methods: {
     // 获取新闻详情
@@ -81,6 +106,16 @@ export default {
         this.post = data
         console.log(this.post)
       }
+    },
+    // 获取评论列表
+    async getCommentList () {
+      const id = this.$route.params.id
+      const res = await this.$axios.get(`/post_comment/${id}`)
+      const { statusCode, data } = res.data
+      if (statusCode === 200) {
+        this.commentList = data
+      }
+      console.log(this.commentList)
     },
     async follow () {
       // id：需要关注的文章的作者的id
@@ -116,6 +151,31 @@ export default {
         this.getPostDetail()
         this.$toast.success(message)
       }
+    },
+    async handleFoucs () {
+      console.log('获得了焦点')
+      // 把isFocus改成true
+      this.isFocus = true
+      // 希望textarea自动获得焦点  获取到textarea，调用focus方法即可
+      // console.log(this.$refs)
+      // DOM异步更新的问题
+      await this.$nextTick()
+      this.$refs.textarea.focus()
+    },
+    handleBlur () {
+      console.log('失去焦点')
+      this.isFocus = false
+    },
+    async star () {
+      console.log('收藏文章')
+      const id = this.post.id
+      const res = await this.$axios.get(`/post_star/${id}`)
+      console.log(res)
+      const { statusCode, message } = res.data
+      if (statusCode === 200) {
+        this.$toast.success(message)
+        this.getPostDetail()
+      }
     }
   },
   watch: {
@@ -129,6 +189,7 @@ export default {
 
 <style lang="scss" scoped>
 .post-detail {
+  padding-bottom: 100px;
   .header {
     height: 50px;
     line-height: 50px;
@@ -206,37 +267,73 @@ export default {
       border-color: red;
     }
   }
+  .post-commnet {
+    .title {
+      font-size: 18px;
+      text-align: center;
+      padding: 10px 0;
+    }
+  }
   .footer {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
     position: fixed;
     bottom: 0;
     left: 0;
     width: 100%;
     padding: 10px 0;
-    input {
-      width: 180px;
-      height: 30px;
-      background-color: #ddd;
-      border-radius: 15px;
-      padding-left: 20px;
+    background-color: #fff;
+    .comment-input {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      input {
+        width: 180px;
+        height: 30px;
+        background-color: #ddd;
+        border-radius: 15px;
+        padding-left: 20px;
+      }
+      .iconfont {
+        font-size: 24px;
+      }
+      .star {
+        color: red;
+      }
+      .icon-comment {
+        position: relative;
+        .num {
+          position: absolute;
+          background-color: red;
+          height: 20px;
+          line-height: 20px;
+          color: #fff;
+          padding: 0 10px;
+          border-radius: 10px;
+          right: -20px;
+          top: -4px;
+        }
+      }
     }
-    .iconfont {
-      font-size: 24px;
-    }
-    .icon-comment {
-      position: relative;
-      .num {
-        position: absolute;
-        background-color: red;
-        height: 20px;
-        line-height: 20px;
-        color: #fff;
-        padding: 0 10px;
+    .comment-textarea {
+      display: flex;
+      width: 100%;
+      padding: 0 20px;
+      justify-content: space-between;
+      align-items: flex-end;
+      textarea {
+        background-color: #ddd;
+        width: 240px;
+        height: 70px;
         border-radius: 10px;
-        right: -20px;
-        top: -4px;
+        padding: 10px;
+      }
+      .send {
+        width: 60px;
+        height: 26px;
+        line-height: 26px;
+        background-color: red;
+        color: #fff;
+        text-align: center;
+        border-radius: 13px;
       }
     }
   }
