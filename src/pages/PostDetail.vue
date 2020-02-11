@@ -50,7 +50,12 @@
       <div class="title">精彩跟帖</div>
       <!-- 评论组件 -->
       <!-- 把需要渲染的评论的数据传递给评论组件 -->
-      <hm-comment v-for="item in commentList" :key="item.id" :comment="item"></hm-comment>
+      <hm-comment
+        v-for="item in commentList"
+        :key="item.id"
+        :comment="item"
+        @reply="reply"
+      ></hm-comment>
     </div>
     <!-- 底部区域 -->
     <div class="footer">
@@ -65,8 +70,8 @@
       </div>
       <!-- 文本域 -->
       <div class="comment-textarea" v-show="isFocus">
-        <textarea ref="textarea" rows="3" placeholder="回复" @blur="handleBlur"></textarea>
-        <div class="send">发送</div>
+        <textarea ref="textarea" rows="3" placeholder="回复" @blur="handleBlur" v-model="content"></textarea>
+        <div class="send" @click="send">发送</div>
       </div>
     </div>
   </div>
@@ -87,7 +92,9 @@ export default {
       // 控制显示文本框还是文本域
       isFocus: false,
       // 评论列表
-      commentList: []
+      commentList: [],
+      parentId: '',
+      content: ''
     }
   },
   created () {
@@ -163,7 +170,10 @@ export default {
       this.$refs.textarea.focus()
     },
     handleBlur () {
-      console.log('失去焦点')
+      // 如果textarea中有内容，不应该隐藏文本域
+      if (this.content) {
+        return
+      }
       this.isFocus = false
     },
     async star () {
@@ -175,6 +185,33 @@ export default {
       if (statusCode === 200) {
         this.$toast.success(message)
         this.getPostDetail()
+      }
+    },
+    async reply (id) {
+      console.log('接收到了子组件的事件', id)
+      // 记录了我需要回复的评论的id
+      this.parentId = id
+      // 显示文本域
+      this.isFocus = true
+      await this.$nextTick()
+      this.$refs.textarea.focus()
+    },
+    async send () {
+      // console.log('哈哈哈')
+      // 发送ajax请求，添加评论
+      const id = this.post.id
+      const res = await this.$axios.post(`/post_comment/${id}`, {
+        content: this.content,
+        parent_id: this.parentId
+      })
+      console.log(res)
+      const { statusCode } = res.data
+      if (statusCode === 200) {
+        this.$toast.success('评论发布成功')
+        this.getCommentList()
+        this.isFocus = false
+        this.content = ''
+        this.parentId = ''
       }
     }
   },
