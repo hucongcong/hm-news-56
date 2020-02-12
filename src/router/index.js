@@ -11,6 +11,7 @@ import MyFavorite from '../pages/MyFavorite.vue'
 import Home from '../pages/Home.vue'
 import PostDetail from '../pages/PostDetail.vue'
 import TabManager from '../pages/TabManager.vue'
+import Search from '../pages/Search.vue'
 Vue.use(VueRouter)
 
 const router = new VueRouter({
@@ -28,7 +29,8 @@ const router = new VueRouter({
     { path: '/my-favorite', component: MyFavorite, name: 'my-favorite' },
     // 动态路由参数
     { path: '/post-detail/:id', component: PostDetail, name: 'post-detail' },
-    { path: '/tab-manager', component: TabManager, name: 'tab-manager' }
+    { path: '/tab-manager', component: TabManager, name: 'tab-manager' },
+    { path: '/search', component: Search, name: 'search' }
   ]
 })
 

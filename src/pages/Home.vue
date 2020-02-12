@@ -4,7 +4,7 @@
       <div class="left">
         <i class="iconfont iconnew"></i>
       </div>
-      <div class="search">
+      <div class="search" @click="$router.push('/search')">
         <i class="iconfont iconsearch"></i>
         <span>搜索新闻</span>
       </div>
@@ -81,11 +81,17 @@ export default {
     // 用于获取所有的tab分类
     // async函数返回的还是一个promise对象
     async getTabList () {
-      const res = await this.$axios.get('/category')
-      const { statusCode, data } = res.data
-      if (statusCode === 200) {
-        // 当把一个数组赋值给tabList,data中所有拥有的数据都会被劫持
-        this.tabList = data
+      // 首页获取数据，优先从缓存中进行获取，如果缓存中没有，我们就发送ajax请求，进行获取
+      const activeTabs = JSON.parse(localStorage.getItem('activeTabs'))
+      if (activeTabs) {
+        this.tabList = activeTabs
+      } else {
+        const res = await this.$axios.get('/category')
+        const { statusCode, data } = res.data
+        if (statusCode === 200) {
+          // 当把一个数组赋值给tabList,data中所有拥有的数据都会被劫持
+          this.tabList = data
+        }
       }
     },
     // 获取当前分类下的文章
