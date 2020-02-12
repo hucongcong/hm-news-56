@@ -219,6 +219,7 @@ export default {
     $route () {
       // 监听路由的变化，如果地址改变了，重新获取数据
       this.getPostDetail()
+      this.getCommentList()
     }
   }
 }

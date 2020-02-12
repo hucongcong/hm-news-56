@@ -9,7 +9,8 @@
       <div class="reply" @click="reply(comment.id)">回复</div>
     </div>
     <!-- 渲染楼层数据 ,如果评论有parent，我们就渲染楼层数据-->
-    <hm-floor :index="index" v-if="comment.parent" :comment="comment.parent"></hm-floor>
+    <!-- 评论组件给楼层组件注册了reply事件 -->
+    <hm-floor :index="index" v-if="comment.parent" :comment="comment.parent" @reply="reply"></hm-floor>
 
     <div class="content">{{comment.content}}</div>
   </div>

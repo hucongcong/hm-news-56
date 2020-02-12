@@ -10,12 +10,13 @@ import MyComments from '../pages/MyComments.vue'
 import MyFavorite from '../pages/MyFavorite.vue'
 import Home from '../pages/Home.vue'
 import PostDetail from '../pages/PostDetail.vue'
+import TabManager from '../pages/TabManager.vue'
 Vue.use(VueRouter)
 
 const router = new VueRouter({
   // 配置路由规则
   routes: [
-    // name： 给这个路由规则起一个名字 /home/one
+    // name： 给这个路由规则起一个名字 /home/one  $push({name})
     { path: '/', component: Home, name: 'home' },
     { path: '/login', component: Login, name: 'login' },
     { path: '/register', component: Register, name: 'register' },
@@ -26,7 +27,8 @@ const router = new VueRouter({
     { path: '/my-comments', component: MyComments, name: 'my-comments' },
     { path: '/my-favorite', component: MyFavorite, name: 'my-favorite' },
     // 动态路由参数
-    { path: '/post-detail/:id', component: PostDetail, name: 'post-detail' }
+    { path: '/post-detail/:id', component: PostDetail, name: 'post-detail' },
+    { path: '/tab-manager', component: TabManager, name: 'tab-manager' }
   ]
 })
 

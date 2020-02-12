@@ -35,13 +35,13 @@
           <!-- 上拉加载更多 -->
           <van-list
             v-model="loading"
-            :finished="finished"
+            :finished="item.finished"
             finished-text="没有更多了"
             @load="onLoad"
             :immediate-check="false"
             :offset="50"
           >
-            <hm-post v-for="post in postList" :key="post.id" :post="post"></hm-post>
+            <hm-post v-for="post in item.postList" :key="post.id" :post="post"></hm-post>
           </van-list>
         </van-pull-refresh>
       </van-tab>
@@ -52,8 +52,6 @@
 <script>
 import HmPost from '../components/hm-post'
 export default {
-  // 如果需要指定某个组件被缓存，给该组件指定name属性
-  name: 'home',
   data () {
     return {
       // 默认激活的tab栏
@@ -62,14 +60,11 @@ export default {
       // 用于存放所有的tab分类
       tabList: [],
       // 每页显示的条数
-      pageIndex: 1,
       pageSize: 5,
       // List的加载状态
       loading: false,
       // 是否在下拉刷新的状态
-      refreshing: false,
-      finished: false,
-      postList: []
+      refreshing: false
     }
   },
   async created () {
@@ -84,6 +79,14 @@ export default {
       const res = await this.$axios.get('/category')
       const { statusCode, data } = res.data
       if (statusCode === 200) {
+        data.forEach(item => {
+          // 保证每一个tab有自己的文章列表
+          item.postList = []
+          // 每一个tab都有自己的pageIndex,记录了每一个tab加载到了第几页
+          item.pageIndex = 1
+          // 给每一个tab添加上finished属性
+          item.finished = false
+        })
         // 当把一个数组赋值给tabList,data中所有拥有的数据都会被劫持
         this.tabList = data
       }
@@ -97,7 +100,7 @@ export default {
       const res = await this.$axios.get('/post', {
         params: {
           category: id,
-          pageIndex: this.pageIndex,
+          pageIndex: this.tabList[this.active].pageIndex,
           pageSize: this.pageSize
         }
       })
@@ -107,19 +110,21 @@ export default {
         // 只要添加debugger，就会自动打断点  eslint不允许使用debugger
         // debugger
         // 把获取到的data数据拼接到postList中
-        this.postList = [...this.postList, ...data]
+        this.tabList[this.active].postList = [...this.tabList[this.active].postList, ...data]
 
         // 需要把loading状态改成false，才能触发下一次的加载
         this.loading = false
-        // 把下拉刷新的状态关闭
-        this.refreshing = false
+        setTimeout(() => {
+          // 把下拉刷新的状态关闭
+          this.refreshing = false
+        }, 1000)
         // 判断是否还有更多的数据
         // 如果本次请求获取到的数据小于每页的条数，说明该分类没有更多文章。
         if (data.length < this.pageSize) {
           // 没有更多数据啦
-          this.finished = true
+          this.tabList[this.active].finished = true
         }
-        console.log(this.postList)
+        console.log(this.tabList[this.active].postList)
       }
     },
     onLoad () {
@@ -128,28 +133,34 @@ export default {
         // 让当前tab下的当前页+1
         // 重新发送请求，加载更多的数据
         // 如果当前tab下的finished为true，就不去触发load事件
-        this.pageIndex++
+        this.tabList[this.active].pageIndex++
         this.getPostList()
-      }, 1000)
+      }, 3000)
     },
     onRefresh () {
-      // 下拉刷新
-      // 当切换tab栏的时候，我们把所有的数据都重置成状态
-      this.pageIndex = 0
-      this.postList = []
-      this.finished = false
+      console.log('下拉刷新了')
+      // 重置所有的状态
       this.loading = true
-      this.onLoad()
+      // 重新变成
+      this.tabList[this.active].pageIndex = 1
+      this.tabList[this.active].postList = []
+      this.tabList[this.active].finished = false
+      // 重新获取第一页的新闻信息
+      this.getPostList()
     }
   },
   watch: {
     active (value) {
-      // 当切换tab栏的时候，我们把所有的数据都重置成状态
-      this.pageIndex = 0
-      this.postList = []
-      this.finished = false
+      // window.scrollTo(0, 0)
+      // 把loading状态改成true
       this.loading = true
-      this.onLoad()
+      // console.log('active发生了改变', value, this.active)
+      // 当分类的发生了改变，需要重新发送ajax请求，获取文章的数据
+      // 在切换分类的时候，先判断当前分类下是否有数据，如果有数据，不需要发请求获取了
+      if (this.tabList[this.active].postList.length > 0) {
+        return
+      }
+      this.getPostList()
     }
   },
   components: {

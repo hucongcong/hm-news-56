@@ -1,5 +1,6 @@
 <template>
   <div class="profile">
+    <hm-header>个人中心</hm-header>
     <div class="user-info" @click="$router.push('/edit-profile')">
       <div class="avatar">
         <!-- 如果有头像，就显示头像，如果没有头像，显示默认头像 -->
@@ -22,6 +23,7 @@
       <hm-nav name="我的关注" desc="关注的用户" @click="$router.push('/follow')"></hm-nav>
       <hm-nav name="我的跟帖" desc="跟帖/回复" @click="$router.push('/my-comments')"></hm-nav>
       <hm-nav name="我的收藏" desc="文章/视频" @click="$router.push('my-favorite')"></hm-nav>
+      <hm-nav name="栏目管理" desc="自定义首页栏目" @click="$router.push('/tab-manager')"></hm-nav>
       <hm-nav name="设置" @click="$router.push('/edit-profile')"></hm-nav>
       <hm-nav name="退出登录" @click="logout"></hm-nav>
     </div>

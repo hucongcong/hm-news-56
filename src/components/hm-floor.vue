@@ -1,12 +1,12 @@
 <template>
   <div class="wrapper">
-    <hm-floor :index="index-1" v-if="comment.parent" :comment="comment.parent"></hm-floor>
+    <hm-floor :index="index-1" v-if="comment.parent" :comment="comment.parent" @reply="reply"></hm-floor>
     <div class="hm-floor">
       <!-- 递归渲染hm-floor组件 -->
       <div class="title">
         <div class="name">{{index}} {{comment.user.nickname}}</div>
         <div class="time">{{comment.create_date | time('YYYY-MM-DD HH:mm:ss')}}</div>
-        <div class="reply">回复</div>
+        <div class="reply" @click="reply(comment.id)">回复</div>
       </div>
       <div class="content">{{comment.content}}</div>
     </div>
@@ -20,6 +20,13 @@ export default {
     // 评论组件传递进来的评论数据，楼层数据
     comment: Object,
     index: Number
+  },
+  methods: {
+    reply (id) {
+      console.log('恢复的id', id)
+      // 触发组件本身的reply事件，把id传给父组件
+      this.$emit('reply', id)
+    }
   }
 }
 </script>
